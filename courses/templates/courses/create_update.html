@@ -1,0 +1,88 @@
+{% extends 'courses/main.html' %}
+
+{% block content %}
+
+{% if teacher %}
+<!DOCTYPE html>
+<html>
+  <title>إضافة أو تعديل  {{topic}}</title>
+  <name>
+    <div class="box" style="width:25rem; background-color: rgb(232, 232, 232)">
+      <h1 style="color:black">إضافة أو تعديل {{topic}} </h1>
+      <form action="" method="POST">
+        {% csrf_token %}       
+
+
+        {% if not object %}
+          {% if child == 'q' %}
+            <input required type="text" placeholder='السؤال' name="name">
+            <select required name="source" id="qsource"><option value="">مصدر السؤال</option></select> 
+          {% else %}
+            <input required type="text" placeholder='اسم ال{{cara}}' name="name">
+          {% endif %}
+
+          {% if child == 'o' or child == 'q' %}
+            {% if child == 'o' %}
+              <textarea required rows="5" cols="59"  placeholder="المحتوى الدراسي" name="content"></textarea>
+            {% endif %}
+            <input type="file" name="img" nameplaceholder='اختر صورة'>
+            {% if child == 'q' %}
+              <input required type="text" placeholder="الخيار الأول" name="op1" >
+              <input type="text" placeholder="الخيار الثاني" name="op2">
+              <input type="text" placeholder="الخيار الثالث" name="op3">
+              <input type="text" placeholder="الخيار الرابع" name="op4">
+              <textarea type="textarea" rows="5" cols="59" placeholder="ملحوظة أو طريقة الحل" name="hint" ></textarea>
+            {% endif %}
+            <input type="text" placeholder="رابط الفيديو" name="video" >
+            {% if child == 'q' %}
+              <input required type="text" placeholder="مستوى السؤال" name="level">
+            {% endif %}
+          {% endif %}
+
+        {% else %}
+          <input type="text" value="{{object.name}}" name="name">     
+          <select name="source" id="qsource"><option value="{{object.source}}">{{object.source}}</option></select>      
+          {% if child == 'o' %}
+            <textarea rows="5" cols="59"  name="content">{{object.content}}</textarea>
+          {% endif %}
+          {% if child == 'o' or child == 'q' or child == 'd' %}
+            {% if object.img %} 
+              <input type="file" name="img" value='{{object.img.url}}'>
+              <a style="width:115px" href="">حذف الصورة</a>
+            {% else %}
+              <input type="file" name="img" nameplaceholder='اختر صورة'>
+            {% endif %}
+          {% endif %}
+          {% if child == 'q' or child == 'd'  %}
+            <input type="text" value='{{object.op1}}' name="op1" >
+            <input type="text" value='{{object.op2}}' name="op2">
+            <input type="text" value='{{object.op3}}' name="op3">
+            <input type="text" value='{{object.op4}}' name="op4">
+            <textarea type="textarea" rows="5" cols="59" name="hint" >{{object.hint}}</textarea>
+          {% endif %}
+          {% if child == 'o' or child == 'q' or child == 'd' %}
+            <input type="text" value='{{object.video}}' name="video" >
+          {% endif %}
+          {% if child == 'q' or child == 'd'   %}
+            <input type="text" value='{{object.level}}' name="level">
+          {% endif %}
+        {% endif %}
+  
+        <button style="width:155px" type="submit">تأكيد</button>
+        <a style="width:100px" href="{{request.META.HTTP_REFERER}}">إلغاء</a>
+        
+        
+  
+      </form>
+    </div>
+  </name>
+
+  <script>
+    qSource = document.getElementById('qsource');
+    for(var s of ['book','exam','other']){
+      qSource.options[qSource.options.length] = new Option(s, s)
+    }
+  </script>
+</html>
+{% endif %}
+{% endblock content %}
